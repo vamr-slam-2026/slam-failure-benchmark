@@ -1,0 +1,16 @@
+[submodule "systems/ORB_SLAM3"]
+	path = systems/ORB_SLAM3
+	url = git@github.com:vamr-slam-2026/ORB_SLAM3.git
+	branch = vamr
+[submodule "systems/DPVO"]
+	path = systems/DPVO
+	url = git@github.com:vamr-slam-2026/DPVO.git
+	branch = vamr
+[submodule "systems/DROID-SLAM"]
+	path = systems/DROID-SLAM
+	url = git@github.com:vamr-slam-2026/DROID-SLAM.git
+	branch = vamr
+[submodule "systems/MASt3R-SLAM"]
+	path = systems/MASt3R-SLAM
+	url = git@github.com:vamr-slam-2026/MASt3R-SLAM.git
+	branch = vamr
