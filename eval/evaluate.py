@@ -327,8 +327,6 @@ def main(argv=None):
             ids[k] = getattr(a, k)
 
     gt = load_tum(a.gt)
-    if gt is None:
-        raise SystemExit(f"ground truth {a.gt} has no valid poses")
     est = load_tum(est_path) if est_path.exists() else None
     frame_times = read_frame_times(a.frames) if a.frames else None
     lost = read_lost(a.lost) if a.lost else None
