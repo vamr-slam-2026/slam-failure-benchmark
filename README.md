@@ -26,7 +26,7 @@ organization (branch `vamr`), pinned to a specific commit:
 | `systems/MASt3R-SLAM` | vamr-slam-2026/MASt3R-SLAM | rmurai0610/MASt3R-SLAM |
 | `systems/DPVO` | vamr-slam-2026/DPVO | princeton-vl/DPVO (not used in current scope) |
 
-The team repo stores only *which commit* of each fork is used. The code itself
+The slam-failure-benchmark repo stores only *which commit* of each fork is used. The code itself
 lives in the forks, with all changes documented in each fork's `CHANGES.md`.
 
 ### Clone everything
@@ -50,9 +50,9 @@ Changes to a system are made **in its fork**, not in the team repo:
     git push                     # pushes to the fork
     # add the change to the fork's CHANGES.md
 
-### Use the new version in the team repo
+### Use the new version in the slam-failure-benchmark repo
 
-Pushing to the fork does **not** update the team repo automatically. Update the
+Pushing to the fork does **not** update the slam-failure-benchmark repo automatically. Update the
 pointer on a branch and open a pull request:
 
     cd <repo root>
@@ -62,20 +62,8 @@ pointer on a branch and open a pull request:
     git commit -m "Update DROID-SLAM to vamr@<short-hash>: seed flag"
     git push -u origin systems/update-droid
 
-### Rules
-
-- Never edit system code without checking out `vamr` inside the submodule first,
-  otherwise commits end up on a detached HEAD and get lost.
-- Only build-/compatibility fixes and our instrumentation (seed, output format,
-  status logging) go into the forks. Each change is logged in the fork's `CHANGES.md`.
-- After `git pull` on `main`, always run `git submodule update --init --recursive`,
-  so your `systems/` match what `main` expects.
-- `git status` in the team repo shows `modified: systems/<name> (new commits)` when a
-  submodule is at a different commit than recorded. Either commit the pointer
-  (intended update) or run `git submodule update` (go back to the recorded version).
 
 ## Euler workflow
-
 ```bash
 bash jobs/download_on_euler.sh          # -> $SCRATCH/data/raw, then prepares $SCRATCH/data/prepared
 DRY_RUN=1 bash jobs/submit_all.sh       # check, then without DRY_RUN
@@ -89,8 +77,7 @@ Labels go into a copy of `eval/labels_template.csv`
 (`system,sequence,t_start,t_end,failure_type,cause,notes`).
 
 ## Local setup / tests
-
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements-eval.txt
-.venv/bin/python -m pytest        # with ROS sourced: env -u PYTHONPATH PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ...
+.venv/bin/python -m pytest        #with ROS sourced: env -u PYTHONPATH PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ...
 ```
