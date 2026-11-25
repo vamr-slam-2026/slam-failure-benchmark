@@ -140,8 +140,6 @@ Camera1.p1: 0.0
 Camera1.p2: 0.0
 Camera.width: {width}
 Camera.height: {height}
-Camera.newWidth: {width}
-Camera.newHeight: {height}
 Camera.fps: {int(round(fps))}
 Camera.RGB: 0
 ORBextractor.nFeatures: {n_features}
@@ -202,7 +200,10 @@ def prepare(entry: dict, data_root: Path, force: bool = False) -> Path:
                 raise IOError(f"cannot read {src}")
             cv2.imwrite(str(dst), cv2.remap(img, mx, my, cv2.INTER_LINEAR))
         lines.append(f"{t:.9f} rgb/{i:06d}.png")
-    (out / "rgb.txt").write_text("# timestamp filename\n" + "\n".join(lines) + "\n")
+    # Exactly 3 header lines like TUM's rgb.txt: ORB-SLAM3's mono_tum skips the first 3 lines
+    # unconditionally; the other readers skip '#' lines.
+    header = f"# frames of {entry['dataset']}/{entry['sequence']} (undistorted pinhole)\n# file: rgb.txt\n# timestamp filename\n"
+    (out / "rgb.txt").write_text(header + "\n".join(lines) + "\n")
 
     fx, fy, cx, cy = K_new[0, 0], K_new[1, 1], K_new[0, 2], K_new[1, 2]
     W, H = cal["width"], cal["height"]

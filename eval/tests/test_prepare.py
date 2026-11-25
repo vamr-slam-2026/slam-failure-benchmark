@@ -38,6 +38,9 @@ def test_prepare_euroc(tmp_path):
                  images="mav0/cam0/data.csv", gt="mav0/state_groundtruth_estimate0/data.csv",
                  calibration={"source": "sensor_yaml", "file": "mav0/cam0/sensor.yaml"}, T_body_cam="auto", fps=20)
     out = prep.prepare(entry, tmp_path)
+    rgb_lines = (out / "rgb.txt").read_text().splitlines()
+    assert all(l.startswith("#") for l in rgb_lines[:3]) and not rgb_lines[3].startswith("#")  # mono_tum skips 3
+    assert "newWidth" not in (out / "orbslam3.yaml").read_text()
     times = read_frame_times(out / "rgb.txt")
     np.testing.assert_allclose(times, np.array(ts) * 1e-9)
     assert not (out / "rgb" / "000000.png").is_symlink()  # undistorted copy
