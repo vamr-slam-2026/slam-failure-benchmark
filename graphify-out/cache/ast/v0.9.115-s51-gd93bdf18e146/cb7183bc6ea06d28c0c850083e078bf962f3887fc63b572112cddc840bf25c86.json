@@ -1,0 +1,1 @@
+{"nodes": [{"id": "pkg_mast3r", "label": "MAST3R", "file_type": "code", "type": "package", "ecosystem": "python", "source_file": "systems/MASt3R-SLAM/thirdparty/mast3r/pyproject.toml", "source_location": "L1", "version": "0.0.1"}], "edges": []}

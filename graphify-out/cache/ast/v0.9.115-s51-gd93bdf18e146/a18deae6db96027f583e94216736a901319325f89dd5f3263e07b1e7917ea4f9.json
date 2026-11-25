@@ -1,0 +1,1 @@
+{"nodes": [{"id": "pkg_in3d", "label": "in3d", "file_type": "code", "type": "package", "ecosystem": "python", "source_file": "systems/MASt3R-SLAM/thirdparty/in3d/pyproject.toml", "source_location": "L1", "version": "0.0.1"}], "edges": []}
