@@ -1,0 +1,174 @@
+# Benchmark sequences.
+#
+#   path         raw sequence dir, relative to $DATA_ROOT/raw (see jobs/download_on_euler.sh)
+#   format       image/GT layout: euroc | tum | bonn | tartanair | uzhfpv | lamaria
+#   images       frame list inside `path` (format specific, see scripts/convert/prepare_sequence.py)
+#   gt           ground-truth file inside `path` (converted with eval/gt_convert.py)
+#   calibration  one of
+#                  {source: sensor_yaml, file: ...}   ASL/EuRoC cam0/sensor.yaml (pinhole + radtan)
+#                  {source: kalibr, file: ...}        Kalibr camchain(-imucam) yaml, cam0
+#                  {source: inline, model: pinhole|radtan|equidistant, width, height,
+#                   intrinsics: [fx, fy, cx, cy], distortion: [...]}
+#   T_body_cam   optional extrinsic to move body-frame GT to the camera:
+#                  auto (EuRoC sensor.yaml / Kalibr T_cam_imu), a file path, or omitted
+#   fps          nominal frame rate (TartanAir: used to synthesise timestamps)
+#
+# All images are undistorted to pinhole during preparation, so every system gets the
+# same undistorted input and a distortion-free calibration.
+#
+# Entries marked VERIFY were not checked against a downloaded copy of the dataset.
+
+sequences:
+  # ------------------------------------------------------------------ EuRoC
+  - dataset: euroc
+    sequence: MH_04_difficult
+    path: euroc/MH_04_difficult
+    format: euroc
+    images: mav0/cam0/data.csv
+    gt: mav0/state_groundtruth_estimate0/data.csv
+    calibration: {source: sensor_yaml, file: mav0/cam0/sensor.yaml}
+    T_body_cam: auto
+    fps: 20
+
+  - dataset: euroc
+    sequence: V2_03_difficult
+    path: euroc/V2_03_difficult
+    format: euroc
+    images: mav0/cam0/data.csv
+    gt: mav0/state_groundtruth_estimate0/data.csv
+    calibration: {source: sensor_yaml, file: mav0/cam0/sensor.yaml}
+    T_body_cam: auto
+    fps: 20
+
+  # ------------------------------------------------------------------ TUM RGB-D (freiburg1)
+  - dataset: tum
+    sequence: fr1_360
+    path: tum/rgbd_dataset_freiburg1_360
+    format: tum
+    images: rgb.txt
+    gt: groundtruth.txt
+    calibration:
+      source: inline
+      model: radtan
+      width: 640
+      height: 480
+      intrinsics: [517.306408, 516.469215, 318.643040, 255.313989]
+      distortion: [0.262383, -0.953104, -0.005358, 0.002628, 1.163314]
+    fps: 30
+
+  - dataset: tum
+    sequence: fr1_room
+    path: tum/rgbd_dataset_freiburg1_room
+    format: tum
+    images: rgb.txt
+    gt: groundtruth.txt
+    calibration:
+      source: inline
+      model: radtan
+      width: 640
+      height: 480
+      intrinsics: [517.306408, 516.469215, 318.643040, 255.313989]
+      distortion: [0.262383, -0.953104, -0.005358, 0.002628, 1.163314]
+    fps: 30
+
+  # ------------------------------------------------------------------ TartanAir ECCV 2020 challenge, mono hard
+  # No image timestamps in TartanAir: t_i = i / fps for both images and GT.
+  - dataset: tartanair
+    sequence: MH004
+    path: tartanair/mono/MH004
+    format: tartanair
+    images: "*.png"
+    gt: ../../mono_gt/MH004.txt          # VERIFY: GT location inside the GT archive
+    calibration:
+      source: inline
+      model: pinhole
+      width: 640
+      height: 480
+      intrinsics: [320.0, 320.0, 320.0, 240.0]
+    fps: 10
+
+  - dataset: tartanair
+    sequence: MH005
+    path: tartanair/mono/MH005
+    format: tartanair
+    images: "*.png"
+    gt: ../../mono_gt/MH005.txt          # VERIFY
+    calibration:
+      source: inline
+      model: pinhole
+      width: 640
+      height: 480
+      intrinsics: [320.0, 320.0, 320.0, 240.0]
+    fps: 10
+
+  # ------------------------------------------------------------------ LaMAria (ASL format, pinhole-rectified)
+  - dataset: lamaria
+    sequence: R_06_medium
+    path: lamaria/R_06_medium
+    format: lamaria
+    images: mav0/cam0/data.csv
+    gt: pGT/R_06_medium.txt              # VERIFY: pGT file name/location and column order
+    calibration: {source: sensor_yaml, file: mav0/cam0/sensor.yaml}
+    fps: 10                              # VERIFY
+
+  - dataset: lamaria
+    sequence: R_11_5cp
+    path: lamaria/R_11_5cp
+    format: lamaria
+    images: mav0/cam0/data.csv
+    gt: pGT/R_11_5cp.txt                 # VERIFY
+    calibration: {source: sensor_yaml, file: mav0/cam0/sensor.yaml}
+    fps: 10                              # VERIFY
+
+  # ------------------------------------------------------------------ UZH-FPV (Snapdragon, fisheye/equidistant)
+  # Sequence choice (indoor_forward_9, indoor_45_2) is a placeholder: any *_with_gt sequence works.
+  - dataset: uzhfpv
+    sequence: indoor_forward_9
+    path: uzhfpv/indoor_forward_9_snapdragon_with_gt
+    format: uzhfpv
+    images: left_images.txt
+    gt: groundtruth.txt
+    calibration: {source: kalibr, file: ../indoor_forward_calib_snapdragon/camchain-imucam-*.yaml}  # VERIFY archive layout
+    T_body_cam: auto
+    fps: 30
+
+  - dataset: uzhfpv
+    sequence: indoor_45_2
+    path: uzhfpv/indoor_45_2_snapdragon_with_gt
+    format: uzhfpv
+    images: left_images.txt
+    gt: groundtruth.txt
+    calibration: {source: kalibr, file: ../indoor_45_calib_snapdragon/camchain-imucam-*.yaml}  # VERIFY archive layout
+    T_body_cam: auto
+    fps: 30
+
+  # ------------------------------------------------------------------ Bonn RGB-D Dynamic
+  - dataset: bonn
+    sequence: crowd
+    path: bonn/rgbd_bonn_crowd
+    format: bonn
+    images: rgb.txt
+    gt: groundtruth.txt
+    calibration:                         # VERIFY against the Bonn dataset page
+      source: inline
+      model: radtan
+      width: 640
+      height: 480
+      intrinsics: [542.822841, 542.576870, 315.593520, 237.756098]
+      distortion: [0.039903, -0.099343, -0.000730, -0.000144, 0.000000]
+    fps: 30
+
+  - dataset: bonn
+    sequence: moving_obstructing_box
+    path: bonn/rgbd_bonn_moving_obstructing_box
+    format: bonn
+    images: rgb.txt
+    gt: groundtruth.txt
+    calibration:                         # VERIFY
+      source: inline
+      model: radtan
+      width: 640
+      height: 480
+      intrinsics: [542.822841, 542.576870, 315.593520, 237.756098]
+      distortion: [0.039903, -0.099343, -0.000730, -0.000144, 0.000000]
+    fps: 30

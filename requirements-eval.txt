@@ -1,0 +1,8 @@
+# eval/ and scripts/convert/ (local venv or the Euler "slambench-eval" conda env)
+evo>=1.30
+numpy
+scipy
+matplotlib
+pyyaml
+opencv-python-headless
+pytest
